@@ -101,9 +101,13 @@ Calculates the gradient with respect to the logjoint instead of the full ELBO.
 """
 struct VariationalELBO{MF<:StaticBool, PD<:StaticBool, N<:StaticBool} <: MixedObjective
     idxs::Vector{Int}
-    VariationalELBO(idxs::AbstractVector{Int}; mean_field = false, path_deriv = true, natural = false) = 
-        new{static(mean_field), static(path_deriv), static(natural)}(idxs)
+    mean_field::MF
+    path_deriv::PD
+    natural::N
 end
+
+VariationalELBO(idxs::AbstractVector{Int}; mean_field = false, path_deriv = true, natural = false) = 
+    VariationalELBO(idxs, static(mean_field), static(path_deriv), static(natural))
 
 (::VariationalELBO{<:StaticBool,<:StaticBool,<:False})(dcm, data, ps, st) = -elbo(dcm, data, ps, st)
 
